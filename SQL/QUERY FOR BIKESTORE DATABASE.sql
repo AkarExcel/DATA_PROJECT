@@ -1,0 +1,44 @@
+-- Query to merge Data from all Table on the Bikestore 
+-- Dataset
+
+SELECT 
+	ord.order_id,
+	CONCAT(cus.first_name, ' ', cus.last_name) AS 'Customer Name',
+	ord.order_date,
+	cus.state,
+	cus.city,
+	ORD.order_date,
+	SUM(ite.quantity) AS 'sales volume',
+	SUM(ite.quantity * ite.list_price) AS revenue,
+	pro.product_name,
+	cat.category_name,
+	bra.brand_name,
+	sto.store_name,
+	CONCAT(sta.first_name, ' ' ,sta.last_name) AS 'Sales rep'
+FROM sales.orders ord
+JOIN sales.customers cus
+ON ord.customer_id =cus.customer_id
+JOIN SALES.order_items ite 
+ON ord.order_id = ite.order_id
+JOIN production.products pro
+ON ite.product_id = pro.product_id
+JOIN production.categories cat
+ON pro.category_id = cat.category_id
+JOIN production.brands bra
+ON pro.brand_id = bra.brand_id
+JOIN sales.stores sto
+ON ord.store_id = sto.store_id
+JOIN sales.staffs sta
+ON ord.staff_id = sta.staff_id
+GROUP BY
+	ord.order_id,
+	CONCAT(cus.first_name, ' ', cus.last_name),
+	ord.order_date,
+	cus.state,
+	cus.city,
+	ORD.order_date,
+	pro.product_name,
+	cat.category_name,
+	bra.brand_name,
+	sto.store_name,
+	CONCAT(sta.first_name, ' ' ,sta.last_name)
